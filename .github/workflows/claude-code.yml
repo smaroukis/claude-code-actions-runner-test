@@ -1,0 +1,25 @@
+name: Claude Code Agent
+
+on:
+  issue_comment:                # You can also use "issues" or "pull_request"
+    types: [created]
+
+jobs:
+  run-claude-code:
+    if: contains(github.event.comment.body, '/cc ')  # our trigger phrase
+    runs-on: ubuntu-latest
+    permissions: {contents: write, pull-requests: write}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---- Claude Code agentic action ----
+      - uses: anthropics/claude-code-action@beta      # official wrapper :contentReference[oaicite:1]{index=1}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: '/cc '                      # only fires when comment starts with /cc
+          branch_prefix: 'claude-'                    # result branch e.g. claude-42
+          # optional: customise behaviour
+          # max_turns: 4
+          # allowed_tools: "Read,Bash(git *:*)"
+          # disallowed_tools: "Edit(package.json)" 
