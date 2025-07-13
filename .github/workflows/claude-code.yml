@@ -1,5 +1,10 @@
 name: Claude Code Agent
 
+# ──────────────────────────────
+# 1. EVENTS
+#    • Opened issues  ➜ use body
+#    • New comments   ➜ use comment body
+# ──────────────────────────────
 on:
   issues:
     types: [opened]
@@ -8,20 +13,36 @@ on:
 
 jobs:
   run-claude-code:
-    if: contains(github.event.issue.body, '/cc ') || contains(github.event.comment.body, '/cc ')  # trigger on issue body or comment
+    # ──────────────────────────
+    # 2. FILTER
+    #    Fire only when the body or comment starts with /cc
+    # ──────────────────────────
+    if: |
+      (github.event_name == 'issues' && startsWith(github.event.issue.body, '/cc ')) ||
+      (github.event_name == 'issue_comment' && startsWith(github.event.comment.body, '/cc '))
     runs-on: ubuntu-latest
-    permissions: {contents: write, pull-requests: write}
+
+    # ──────────────────────────
+    # 3. PERMISSIONS
+    #    👈  This extra line fixes the OIDC-token error
+    # ──────────────────────────
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write       # ← REQUIRED by claude-code-action
 
     steps:
       - uses: actions/checkout@v4
 
-      # ---- Claude Code agentic action ----
-      - uses: anthropics/claude-code-action@beta      # official wrapper :contentReference[oaicite:1]{index=1}
+      # ──────────────────────────
+      # 4. CLAUDE CODE ACTION
+      # ──────────────────────────
+      - uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          trigger_phrase: '/cc '                      # only fires when comment starts with /cc
-          branch_prefix: 'claude-'                    # result branch e.g. claude-42
-          # optional: customise behaviour
+          trigger_phrase: '/cc '
+          branch_prefix: 'claude-'        # branch like claude-42
+          # optional tuning:
           # max_turns: 4
           # allowed_tools: "Read,Bash(git *:*)"
-          # disallowed_tools: "Edit(package.json)" 
+          # disallowed_tools: "Edit(package.json)"
