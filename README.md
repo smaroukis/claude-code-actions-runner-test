@@ -41,17 +41,15 @@ This repository demonstrates how to set up Claude Code to automatically run in G
 
 ### 3. Usage
 
-1. **Create an issue** in your GitHub repository
-2. **Comment with `/cc`** followed by your request, for example:
-   ```
-   /cc Please create a simple calculator function in JavaScript
-   ```
-3. **Claude will respond** by creating a new branch with the requested changes
-4. **Changes auto-deploy** to your Netlify site for immediate preview
+1. **Create an issue** in your GitHub repository with `/cc` in the title/body, OR comment with `/cc`:
+   - **In issue body**: Create issue with `/cc Please create a simple calculator function`
+   - **In comment**: Comment `/cc Please create a simple calculator function`
+2. **Claude will respond** by creating a new branch with the requested changes
+3. **Changes auto-deploy** to your Netlify site for immediate preview
 
 ## Example Requests
 
-Try commenting these on issues:
+Try adding these to issue bodies or comments:
 
 - `/cc Create a simple todo list app`
 - `/cc Add a contact form to the website`

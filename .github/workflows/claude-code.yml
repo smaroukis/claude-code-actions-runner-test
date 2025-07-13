@@ -1,12 +1,14 @@
 name: Claude Code Agent
 
 on:
-  issue_comment:                # You can also use "issues" or "pull_request"
+  issues:
+    types: [opened]
+  issue_comment:
     types: [created]
 
 jobs:
   run-claude-code:
-    if: contains(github.event.comment.body, '/cc ')  # our trigger phrase
+    if: contains(github.event.issue.body, '/cc ') || contains(github.event.comment.body, '/cc ')  # trigger on issue body or comment
     runs-on: ubuntu-latest
     permissions: {contents: write, pull-requests: write}
 
